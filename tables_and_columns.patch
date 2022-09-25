@@ -1,0 +1,93 @@
+Index: src/helper/util.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/helper/util.js b/src/helper/util.js
+--- a/src/helper/util.js	(revision 3af29b819ba6939af284364eb98ef96f1df5b1a4)
++++ b/src/helper/util.js	(date 1653225361359)
+@@ -40,4 +40,11 @@
+     store.dispatch({
+         type: AuthActionTypes.AUTH_CLEAR_INFO,
+     })
++}
++
++
++export const convertSetToObject = (set) => {
++    const keys = Object.keys(set)
++
++    return keys.reduce((acc, curr) => ({...acc, [curr]: [...set[curr]]}), {})
+ }
+\ No newline at end of file
+Index: src/components/parseDataBox/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/components/parseDataBox/index.js b/src/components/parseDataBox/index.js
+--- a/src/components/parseDataBox/index.js	(revision 3af29b819ba6939af284364eb98ef96f1df5b1a4)
++++ b/src/components/parseDataBox/index.js	(date 1653232883347)
+@@ -1,11 +1,13 @@
+ /* eslint-disable react-hooks/exhaustive-deps */
+ import React, {useState, useEffect, useRef} from 'react';
+ import AceEditor from "react-ace";
++import { SDKVisitor, convert } from "sqlanalyzer-sdk-js";
+ import "ace-builds/src-noconflict/mode-json";
+ import "ace-builds/src-noconflict/mode-xml";
+ import { useStore } from 'react-redux';
+ import { ReactComponent as DownloadSvg } from '../../assets/icons/download.svg';
+ import './parseDataBox.css';
++import {convertSetToObject} from "../../helper/util";
+ 
+ const ParseDataBox = ({width}) => {
+     const store = useStore().getState();
+@@ -55,9 +57,21 @@
+         if (parsedData && Object.keys(parsedData).length > 0) {
+             if (tabName === "json") {
+                 editor.setValue(JSON.stringify(parsedData.json, null, '\t'), -1);
+-            } else {
+-                editor.setValue(parsedData.xml, -1);
+-            }
++                return
++            }
++            if (tabName === "table") {
++                const visitor = new SDKVisitor();
++
++                const convertedJson = convert({ ...parsedData.json, "_type": "parseql",});
++
++                convertedJson.accept(visitor)
++
++                editor.setValue(JSON.stringify(convertSetToObject(visitor), null, '\t'), -1);
++
++                return
++            }
++
++            editor.setValue(parsedData.xml, -1);
+         } else {
+             editor.setValue('');
+         }
+@@ -73,6 +87,7 @@
+                     <div className="tab-wrapper">
+                         <button type="button" className={"button left" + (activeTab==='json' ? ' activated' : '')} onClick={(e) => changedTab('json')}>JSON</button>
+                         <button type="button" className={"button" + (activeTab==='xml' ? ' activated' : '')} onClick={(e) => changedTab('xml')}>XML</button>
++                        <button type="button" className={"button" + (activeTab==='table' ? ' activated' : '')} onClick={(e) => changedTab('table')}>Tables and Columns</button>
+                     </div>
+                 </div>
+                 <div className="parse-box pane" style={{height: `100%`}}>
+Index: src/components/parseDataBox/parseDataBox.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/components/parseDataBox/parseDataBox.css b/src/components/parseDataBox/parseDataBox.css
+--- a/src/components/parseDataBox/parseDataBox.css	(revision 3af29b819ba6939af284364eb98ef96f1df5b1a4)
++++ b/src/components/parseDataBox/parseDataBox.css	(date 1653065723717)
+@@ -32,7 +32,7 @@
+ .parse-wrapper .tab-wrapper .button {
+   background-color: white;
+   border: none;
+-  width: 90px;
++  min-width: 90px;
+   font-family: "Inter";
+   font-size: 12px;
+   font-weight: normal;

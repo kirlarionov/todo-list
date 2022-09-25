@@ -1,0 +1,1 @@
+export const API_TODOS_URL = 'https://61dee2c8fb8dae0017c2e31e.mockapi.io/spring_todos'
