@@ -42,7 +42,7 @@ const LoginPage = ({ setUser }) => {
 
          if (!!name) {
             setUser(name)
-            navigate("/todo-list-2/")
+            navigate("/todo-list/")
             localStorage.setItem("userName", name)
          } else {
             setEmptyName("red")

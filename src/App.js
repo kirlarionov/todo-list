@@ -42,12 +42,12 @@ const App = () => {
       if (userName) {
          setUser(userName)
       } else {
-         navigate("/todo-list-2/login")
+         navigate("/todo-list/login")
       }
    }, [navigate])
 
    useEffect(() => {
-      if (currentURL.pathname === "/todo-list-2/") {
+      if (currentURL.pathname === "/todo-list/") {
          setLoginBtnName("Log Out")
       } else {
          setLoginBtnName("Log In")
@@ -65,19 +65,19 @@ const App = () => {
             minHeight: "100vh",
          }}>
          <Box sx={{ p: "20px" }}>
-            <MenuLink to="/todo-list-2/">HOME</MenuLink>
-            <MenuLink to="/todo-list-2/login" onClick={onClickLogOut}>
+            <MenuLink to="/todo-list/">HOME</MenuLink>
+            <MenuLink to="/todo-list/login" onClick={onClickLogOut}>
                {loginBtnName}
             </MenuLink>
          </Box>
 
          <Routes>
             <Route
-               path="/todo-list-2/"
+               path="/todo-list/"
                element={<MainTodosAppPage user={user} />}
             />
             <Route
-               path="/todo-list-2/login"
+               path="/todo-list/login"
                element={<LoginPage setUser={setUser} />}
             />
          </Routes>
