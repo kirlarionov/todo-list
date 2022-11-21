@@ -2,7 +2,7 @@
 
 <h1 align="center">
       ToDo List
-      <img src="./src/assets/image/to-do-list.png" width="32">
+      <img src="./src/images/to-do-list.png" width="32">
 </h1>
 
 ## About
