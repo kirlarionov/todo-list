@@ -41,7 +41,7 @@ const AddTodosForm = () => {
       if (!!todoText) {
          if (!todoDay) return setEmptyDay(true)
          else return (
-            dispatch(addTodo({ ...data, done: done === 'done' })),
+            dispatch(addTodo({ ...data, done: done === 'done', createdAt: Date.now() })),
             setTodoText(''),
             setEmptyInput(false),
             setEmptyDay(false)
@@ -79,7 +79,7 @@ const AddTodosForm = () => {
             sx={{ marginRight: '5px' }}
          />
 
-         <SelectBox variant="standard" sx={emptyDay && { borderColor: 'red' }}>
+         <SelectBox variant="standard" sx={emptyDay && { border: '2px solid red', borderRadius: '10px' }}>
             <InputLabel id="demo-simple-select-standard-label">Weeks day</InputLabel>
             <Select
                name="day"

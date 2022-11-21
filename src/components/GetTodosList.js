@@ -6,6 +6,7 @@ import { Close, Edit } from '@mui/icons-material'
 import EditTodoMode from "./EditTodoMode"
 import { getTodos, removeTodo, toggleTodo } from "../store/actions"
 import { todosDataSelector, todosFetchingSelector } from '../store/selectors'
+import Loader from "./Loader"
 
 const TodoBox = styled(Box)`
    position: relative;
@@ -32,6 +33,19 @@ const EmptyTodosList = styled(Typography)`
    font-size: 25px;
    text-align: center;
    color: blue;
+`
+const LoaderBox = styled(Box)`
+   position: absolute;
+   top: 0px;
+   right: 0px;
+   width: 100%;
+   height: 100%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   background-color: #6060676e;
+   border-radius: 7px;
+   z-index: 999;
 `
 
 const GetTodosList = () => {
@@ -62,12 +76,14 @@ const GetTodosList = () => {
       dispatch(removeTodo(id))
    }, [dispatch])
 
-   if (loading) {
-      return <Typography sx={{ fontSize: '30px', margin: '20px' }}>LOADING...</Typography>
-   }
-
    return (
-      <Box>
+      <Box sx={{ position: "relative" }}>
+         {!!loading && (
+               <LoaderBox>
+                  <Loader />
+               </LoaderBox>
+            )}
+
          {!todos.length ? <EmptyTodosList>TODOs list is empty...</EmptyTodosList> : (
             todos.map((todo, indx) => {
                return (
